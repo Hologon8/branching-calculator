@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Zero-Point Energy Branching Calculator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f4f4f9;
+      color: #333;
+    }
+    h1 {
+      text-align: center;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .input-group {
+      margin-bottom: 15px;
+    }
+    label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    input {
+      width: 100%;
+      padding: 8px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    button {
+      background-color: #007bff;
+      color: white;
+      padding: 10px 15px;
+      font-size: 16px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 10px;
+      text-align: center;
+    }
+    th {
+      background-color: #007bff;
+      color: white;
+    }
+    canvas {
+      margin-top: 20px;
+      display: block;
+      width: 100%;
+      height: 400px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Zero-Point Energy Branching Calculator</h1>
+  <div class="container">
+    <div class="input-group">
+      <label for="initialValue">Initial Value (x₀):</label>
+      <input type="number" id="initialValue" value="0">
+    </div>
+    <div class="input-group">
+      <label for="branchFactor">Branching Factor (k):</label>
+      <input type="number" step="0.01" id="branchFactor" value="0.02">
+    </div>
+    <div class="input-group">
+      <label for="iterations">Number of Iterations (n):</label>
+      <input type="number" id="iterations" value="50">
+    </div>
+    <button id="calculateButton">Calculate</button>
+    <table>
+      <thead>
+        <tr>
+          <th>Iteration (n)</th>
+          <th>Value (fₙ)</th>
+        </tr>
+      </thead>
+      <tbody id="resultsTable"></tbody>
+    </table>
+    <canvas id="resultsChart"></canvas>
+  </div>
+
+  <script>
+    document.getElementById("calculateButton").addEventListener("click", () => {
+      const initialValue = parseFloat(document.getElementById("initialValue").value);
+      const branchFactor = parseFloat(document.getElementById("branchFactor").value);
+      const iterations = parseInt(document.getElementById("iterations").value);
+
+      const resultsTable = document.getElementById("resultsTable");
+      resultsTable.innerHTML = "";
+
+      const values = [];
+      let currentValue = initialValue;
+
+      for (let n = 0; n <= iterations; n++) {
+        resultsTable.innerHTML += `<tr><td>${n}</td><td>${currentValue.toFixed(5)}</td></tr>`;
+        values.push({ x: n, y: currentValue });
+        currentValue = currentValue * (1 + branchFactor);
+      }
+
+      drawChart(values);
+    });
+
+    function drawChart(data) {
+      const ctx = document.getElementById("resultsChart").getContext("2d");
+      const labels = data.map(point => point.x);
+      const values = data.map(point => point.y);
+
+      new Chart(ctx, {
+        type: "line",
+        data: {
+          labels: labels,
+          datasets: [{
+            label: "Branching Sequence",
+            data: values,
+            borderColor: "#007bff",
+            borderWidth: 2,
+            fill: false
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: {
+              display: true
+            }
+          },
+          scales: {
+            x: {
+              title: {
+                display: true,
+                text: "Iteration (n)"
+              }
+            },
+            y: {
+              title: {
+                display: true,
+                text: "Value (fₙ)"
+              }
+            }
+          }
+        }
+      });
+    }
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</body>
+</html>
+document.getElementById("calculateButton").addEventListener("click", () => {
+  const hbar = parseFloat(document.getElementById("hbar").value);
+  const omega = parseFloat(document.getElementById("omega").value);
+  const iterations = parseInt(document.getElementById("iterations").value);
+
+  const resultsTable = document.getElementById("resultsTable");
+  resultsTable.innerHTML = "";
+
+  const values = [];
+
+  for (let n = 0; n <= iterations; n++) {
+    let currentValue = (n + 0.5) * hbar * omega; // Quantum Harmonic Oscillator energy level
+    resultsTable.innerHTML += `<tr><td>${n}</td><td>${currentValue.toFixed(5)}</td></tr>`;
+    values.push({ x: n, y: currentValue });
+  }
+
+  drawChart(values);
+});
+<div class="input-group">
+  <label for="hbar">Reduced Planck's Constant (ħ):</label>
+  <input type="number" id="hbar" value="1" step="0.001">
+</div>
+<div class="input-group">
+  <label for="omega">Angular Frequency (ω):</label>
+  <input type="number" id="omega" value="1" step="0.001">
+</div>
+function drawChart(data) {
+  const ctx = document.getElementById("resultsChart").getContext("2d");
+  const labels = data.map(point => point.x);
+  const values = data.map(point => point.y);
+
+  new Chart(ctx, {
+    type: "line",
+    data: {
+      labels: labels,
+      datasets: [{
+        label: "Energy Levels",
+        data: values,
+        borderColor: "#007bff",
+        borderWidth: 2,
+        fill: false,
+        pointRadius: 0,
+      }, {
+        label: "Uncertainty",
+        data: values.map(v => ({ y: v, yMin: v - (hbar * omega / 2), yMax: v + (hbar * omega / 2) })),
+        backgroundColor: 'rgba(0, 123, 255, 0.2)',
+        borderColor: 'rgba(0, 123, 255, 0.2)',
+        type: 'line',
+        fill: '-1',
+        pointRadius: 0,
+      }]
+    },
+    options: {
+      // ... (existing options)
+    }
+  });
+}
